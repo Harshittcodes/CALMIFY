@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calmify</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: #1f1c38;
+      border-radius: 30px;
+      box-shadow: 0 0 20px #0ff, 0 0 30px #00f;
+      margin: 20px auto;
+      max-width: 90%;
+    }
+
+    header h1 {
+      font-size: 28px;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #00f;
+    }
+
+    .tabs {
+      display: flex;
+    }
+
+    .tab {
+      background-color: rgba(0, 255, 255, 0.5);
+      border-radius: 15px;
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    nav a {
+      margin: 0 15px;
+      color: #0ff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #00f;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      text-align: center;
+      padding: 40px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .container h2 {
+      font-size: 40px;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #00f;
+    }
+
+    .container p {
+      font-size: 18px;
+      margin: 20px 0;
+      color: #ddd;
+    }
+
+    .button-group {
+      margin: 30px 0;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      margin: 10px;
+      border: none;
+      border-radius: 20px;
+      background: #1f1c38;
+      color: #0ff;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #00f;
+      box-shadow: 0 0 20px #0ff, 0 0 30px #00f;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .button:hover {
+      background: #0ff;
+      color: #1f1c38;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #1f1c38;
+      border-radius: 30px;
+      box-shadow: 0 0 20px #0ff, 0 0 30px #00f;
+      margin: 20px auto;
+      max-width: 90%;
+    }
+
+    footer p {
+      color: #0ff;
+      font-weight: bold;
+    }
+
+    /* Sliding effect */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Chatbot Styles */
+    #chatbot {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+
+    #chatbot-toggle {
+      background: #0ff;
+      color: #1f1c38;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      box-shadow: 0 0 20px #0ff, 0 0 30px #00f;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    #chatbot-toggle:hover {
+      background: #1f1c38;
+      color: #0ff;
+    }
+
+    #chatbot-widget {
+      display: none;
+      width: 350px;
+      height: 500px;
+      background: #1f1c38;
+      box-shadow: 0 0 20px #0ff, 0 0 30px #00f;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    #chatbot-widget iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    #chatbot-widget.visible {
+      display: block;
+    }
+
+    /* Login Styles */
+    #login-page {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 15px;
+      border: 1px solid #0ff;
+      background-color: #24243e;
+      color: #fff;
+    }
+
+    .sos-button {
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 18px;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #00f;
+    }
+
+    .circle {
+      border-radius: 50%;
+      overflow: hidden;
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+  </style>
+
+</head>
+<body>
+  <header>
+    <h1>Calmify</h1>
+    <nav>
+      <a href="https://teachablemachine.withgoogle.com/models/J52_VLsWh/" target="_blank">Mood Analysis</a>
+      <a href="#Home">Home</a>
+      <a href="#Relaxation">Relaxation</a>
+      <a href="#Activities">Activities</a>
+      <a href="#Contact">Contact</a>
+    </nav>
+  </header>
+
+  <div id="login-page">
+    <input type="text" placeholder="Username" id="username" pattern="[A-Za-z]+" title="Only letters are allowed" required>
+    <input type="email" placeholder="Email ID" id="email" required>
+    <br>
+    <button onclick="openHomePage()" class="login-button">Login</button>
+</div>
+
+
+
+<style>
+    /* Centering and styling the login section */
+    #login-page {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    input {
+        display: block;
+        margin: 10px auto;
+        padding: 12px 20px;
+        border-radius: 25px;
+        border: 2px solid #0ff;
+        background-color: #24243e;
+        color: #fff;
+        font-size: 16px;
+        width: 80%;
+        box-sizing: border-box;
+    }
+
+    /* Centered Login Button */
+    .login-button {
+        display: block;
+        margin: 20px auto;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 25px;
+        background: #1f1c38;
+        color: #0ff;
+        font-size: 18px;
+        font-weight: bold;
+        text-shadow: 0 0 10px #0ff, 0 0 20px #00f;
+        box-shadow: 0 0 20px #0ff, 0 0 30px #00f;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .login-button:hover {
+        background: #0ff;
+        color: #1f1c38;
+    }
+
+    /* Contact Section Styling */
+    #contact {
+        text-align: center;
+        background: #1f1c38;
+        color: white;
+        padding: 20px;
+        margin-top: 30px;
+        border-top: 2px solid #0ff;
+    }
+
+    /* Footer Styling */
+    footer {
+        text-align: center;
+        padding: 15px;
+        background: #0d0d2b;
+        color: white;
+        margin-top: 10px;
+        border-top: 2px solid #0ff;
+    }
+</style>
+
+  
+
+  <div id="home-page" class="hidden">
+    <div class="container">
+      <h2>Welcome to Your Stress-Free Zone</h2>
+      <p>Find peace and relaxation through interactive activities.</p>
+      <div class="button-group">
+        <button class="button" onclick="openStressIdentification()">Identify Stress</button>
+        <button class="button" onclick="openYogaVideo()">Yoga for Stress</button>
+        <button class="button" onclick="openMeditation()">Meditations</button>
+        <button class="button" onclick="playSoothingMusic()">Soothing Music</button>
+        <button class="button" onclick="openVRExperience()">VR Experience</button>
+        <button class="button" onclick="findPsychologist()">Meet Psychologist</button>
+      </div>
+
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Review System</title>
+          <style>
+              body {
+                  font-family: Calibri, sans-serif;
+                  background-color: #121212;
+                  text-align: center;
+                  padding: 20px;
+              }
+              .review-container {
+                  background: #1e1e1e;
+                  padding: 20px;
+                  border-radius: 12px;
+                  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+                  display: inline-block;
+                  width: 300px;
+              }
+              .review-title {
+                  color: #00f0ff;
+                  font-size: 24px;
+                  font-weight: bold;
+                  text-shadow: 0 0 10px #00f0ff;
+                  margin-bottom: 15px;
+              }
+              .stars {
+                  display: flex;
+                  justify-content: center;
+                  gap: 8px;
+              }
+              .star {
+                  font-size: 30px;
+                  cursor: pointer;
+                  color: #444;
+                  transition: color 0.3s, transform 0.2s;
+              }
+              .star.active {
+                  color: #00f0ff;
+                  text-shadow: 0 0 10px #00f0ff;
+                  transform: scale(1.2);
+              }
+              .comment-box {
+                  width: 100%;
+                  height: 80px;
+                  font-family: Calibri, sans-serif;
+                  border: none;
+                  padding: 10px;
+                  resize: none;
+                  background: #222;
+                  color: white;
+                  margin-top: 15px;
+                  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+              }
+          </style>
+      </head>
+      <body>
+      
+          <div class="review-container">
+              <h2 class="review-title">Rate Us</h2>
+              <div class="stars">
+                  <span class="star" data-value="1">&#9733;</span>
+                  <span class="star" data-value="2">&#9733;</span>
+                  <span class="star" data-value="3">&#9733;</span>
+                  <span class="star" data-value="4">&#9733;</span>
+                  <span class="star" data-value="5">&#9733;</span>
+              </div>
+              <textarea class="comment-box" placeholder="Write your comments here..."></textarea>
+          </div>
+      
+          <script>
+              const stars = document.querySelectorAll('.star');
+      
+              stars.forEach(star => {
+                  star.addEventListener('click', () => {
+                      stars.forEach(s => s.classList.remove('active'));
+                      for (let i = 0; i < star.dataset.value; i++) {
+                          stars[i].classList.add('active');
+                      }
+                  });
+              });
+          </script>
+      
+      </body>
+      </html>
+      
+      <div id="contact" class="container">
+        <h2>Contact Us</h2>
+        <p>Have questions? We're here to help!</p>
+        <p>IG: calmify_ai</p>
+        <p>X: calmify.org</p>
+        <p>LinkedIn: Calmify Support Page</p>
+        <p>WhatsApp: +9193544XXXXX</p>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Stress Buster. All Rights Reserved.</p>
+    </footer>
+    
+
+  <!-- Chatbot -->
+  <div id="chatbot">
+    <button id="chatbot-toggle" onclick="toggleChatbot()">Chat with us</button>
+    <div id="chatbot-widget">
+      <iframe allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/908d1c59-f2a3-43b3-b163-6025e72a7816"></iframe>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function openHomePage() {
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('home-page').classList.remove('hidden');
+    }
+
+    function openStressIdentification() {
+      window.open('https://greatergood.berkeley.edu/quizzes/take_quiz/stress_and_anxiety', '_blank');
+    }
+
+    function openYogaVideo() {
+      window.open('https://youtube.com/playlist?list=PLui6Eyny-Uzytt2xll_JwFbd3WYJyOtT4&si=R_RFW4puSut3JfpC', '_blank');
+    }
+
+    function openMeditation() {
+      window.open('https://youtu.be/EwQkfoKxRvo?si=95T9fqKiPbH2Y4fP', '_blank');
+    }
+
+    function playSoothingMusic() {
+      window.open('https://youtu.be/YRJ6xoiRcpQ?si=plhsAs3pfoYgyQtS', '_blank');
+    }
+
+    function openVRExperience() {
+      window.open('https://relaxing-vr.com/category/vr-experience/vr-video/', '_blank');
+    }
+
+    function findPsychologist() {
+      window.open('https://www.google.co.in/maps/search/PSYCHOLOGISTS+NEAR+ME/@28.7036227,77.4278232,13z/data=!3m1!4b1?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D', '_blank');
+    }
+
+    function toggleChatbot() {
+      const chatbotWidget = document.getElementById('chatbot-widget');
+      chatbotWidget.classList.toggle('visible');
+    }
+
+    function callSos() {
+      window.location.href = "tel:911";
+    }
+  </script>
+</body>
+</html>
